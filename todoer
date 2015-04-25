@@ -1,0 +1,77 @@
+#/bin/bash
+
+repo=$1
+todo_pattern=TODO
+
+# TODO handle relative paths in proper way
+
+find_files_with_todos() {
+    ack -l $todo_pattern
+}
+
+find_todo_line_nums() {
+    cat $1 | xargs grep -n $todo_pattern | cut -d : -f $2 > ../$3
+}
+
+create_tmp_files() {
+    cd $repo
+    find_files_with_todos > ../todo_file_list
+    find_todo_line_nums todo_file_list 1 todo_files
+    find_todo_line_nums todo_file_list 2 todo_line_nums
+}
+
+cleanup() {
+    cd ..
+    rm todo_file_list todo_files todo_line_nums
+}
+
+lay_the_blame() {
+    create_tmp_files
+    file_array=( `cat "../todo_files" ` )
+    line_num_array=( `cat "../todo_line_nums"` )
+    num_todos=${#file_array[@]}
+    n=`expr $num_todos - 1`
+    for i in $(seq 0 $n); do
+        git blame --date iso ${file_array[$i]} -L ${line_num_array[$i]},${line_num_array[$i]}
+    done
+}
+
+get_todo_dates() {
+    cat $1 \
+        | sed 's/\(^.*\)\((.*....-..-..\.*)\)\(.*$\)/\2/g' \
+        | sed 's/.*\(....-..-..\).*/\1/g' \
+        | grep -v '^.*[a-zA-Z].*'
+}
+
+duration_in_days() {
+    currdate=$(date '+%s')
+    date_array=( `cat ../dates` )
+    for date in ${date_array[*]}; do
+        d=$(date -jf "%Y-%m-%d" ${date} '+%s')
+        ddiff=`expr $currdate - $d`
+        days=`expr $ddiff / 86400`
+        echo $days
+    done
+}
+
+years_old() {
+    dur_array=( `cat "../duration"` )
+    for dur in ${dur_array[*]}; do
+        appr_yrs=$(echo "scale = 1; x = $dur / 365; if (x < 1) print 0; x" | bc)
+        echo $appr_yrs
+    done
+}
+
+summarise() {
+    years_old | sort | uniq -c | sort -nr | sed 's/\(.*\) \(.*\)/\1 - \2 years/g'
+}
+
+doit() {
+    lay_the_blame > ../theblame
+    get_todo_dates ../theblame > ../dates
+    duration_in_days > ../duration
+    summarise
+    #cleanup # TODO make this optional
+}
+
+doit
