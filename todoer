@@ -2,7 +2,6 @@
 
 repo=$1
 todo_pattern=TODO
-pipeline_erros=()
 
 # TODO handle relative paths in proper way
 
@@ -80,7 +79,7 @@ summarise() {
     check_for_pipeline_error
 }
 
-doit() {
+find_todos_and_report() {
     lay_the_blame > ../theblame
     get_todo_dates ../theblame > ../dates
     duration_in_days > ../duration
@@ -88,4 +87,4 @@ doit() {
     #cleanup # TODO make this optional
 }
 
-doit
+find_todos_and_report
