@@ -4,7 +4,7 @@ Search your codebase for `TODO` comments and get a summary of the amount and the
 
 ### Usage
 
-`./todoer <reponame>`
+`./todoer --r <reponame> --strict`
 
 ### Sample output
 

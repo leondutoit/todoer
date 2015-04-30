@@ -1,18 +1,35 @@
 #/bin/bash
 
-repo=$1
+if [ $# -lt 1 ]; then
+    echo "Missing arguments, exiting"
+    echo "Usage: ./todoer <repo_name>"
+    exit 1
+fi
+
 todo_pattern=TODO
+repo=
+strict=
+
+while (( "$#" )); do
+    case $1 in
+        -r|--repo) shift; echo "using repo: $1"; repo="$1"; shift ;;
+        -s|--strict) shift; echo "running in strict mode" ;;
+        *) break ;;
+    esac
+done
 
 # TODO handle relative paths in proper way
 
 check_for_pipeline_error() {
-    for i in ${PIPESTATUS[*]}; do
-        if [ $i != 0 ]; then
-            echo "There was an error in the pipeline"
-            echo "Terminating execution"
-            exit 1
-        fi
-    done
+    if [ "$strict" != "" ]; then
+        for i in ${PIPESTATUS[*]}; do
+            if [ $i != 0 ]; then
+                echo "There was an error in the pipeline"
+                echo "Terminating execution"
+                exit 1
+            fi
+        done
+    fi
 }
 
 find_files_with_todos() {
