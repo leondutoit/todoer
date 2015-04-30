@@ -9,11 +9,21 @@ fi
 todo_pattern=TODO
 repo=
 strict=
+todoer_help="\
+
+    Usage: ./todoer [options]
+
+    Options:
+        -r, --repo      The name of the git repo to analyse.
+        -s, --strict    If any internal data pipeline fails then exit.
+        -h, --help      Print this help.
+"
 
 while (( "$#" )); do
     case $1 in
         -r|--repo) shift; echo "using repo: $1"; repo="$1"; shift ;;
         -s|--strict) shift; echo "running in strict mode"; strict="yep" ;;
+        -h|--help) shift; printf "%s\n" "$todoer_help"; exit 0 ;;
         *) break ;;
     esac
 done
