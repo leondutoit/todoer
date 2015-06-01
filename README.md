@@ -9,17 +9,16 @@ Search your codebase for `TODO` comments and get a summary of the amount and the
 ### Sample output
 
 ```
-  56 - 0.6 years
-  14 - 1.2 years
-  13 - 1.7 years
-  11 - 1.6 years
-  11 - 0.4 years
-   8 - 2.0 years
-   5 - 2.4 years
-   5 - 2.2 years
-   5 - 1.1 years
-   4 - 3.2 years
-   4 - 2.3 years
+using repo: some-repo
+            0.7 yrs    56 ############################################################
+            1.8 yrs    13 ##############
+            1.7 yrs    11 ############
+            1.2 yrs    11 ############
+            0.5 yrs    11 ############
+            2.1 yrs     8 #########
+            1.3 yrs     8 #########
+            2.5 yrs     5 ######
+            ...
 ```
 
 ### Dependencies
