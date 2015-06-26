@@ -8,7 +8,9 @@ prep_output() {
 }
 
 blame() {
-    while read line1; read line2; do git blame --date iso $line1 -L $line2,$line2; done
+    while read line1; read line2; do
+        git blame --date iso $line1 -L $line2,$line2;
+    done
 }
 
 get_dates() {
@@ -18,11 +20,20 @@ get_dates() {
 }
 
 to_days() {
-    while read date1; do currdate=$(date '+%s'); d=$(date -jf "%Y-%m-%d" ${date1} '+%s'); ddiff=`expr $currdate - $d`; days=`expr $ddiff / 86400`; echo $days; done
+    while read date1; do
+        currdate=$(date '+%s');
+        d=$(date -jf "%Y-%m-%d" ${date1} '+%s');
+        ddiff=`expr $currdate - $d`;
+        days=`expr $ddiff / 86400`;
+        echo $days;
+    done
 }
 
-approx_years() {
-    while read day1; do appr_yrs=$(echo "scale = 1; x = $day1 / 365; if (x < 1) print 0; x" | bc); echo $appr_yrs; done;
+to_approx_years() {
+    while read day1; do
+        appr_yrs=$(echo "scale = 1; x = $day1 / 365; if (x < 1) print 0; x" | bc);
+        echo $appr_yrs;
+    done;
 }
 
 hist() {
@@ -38,7 +49,7 @@ report() {
     blame |
     get_dates |
     to_days |
-    approx_years |
+    to_approx_years |
     hist
 }
 
