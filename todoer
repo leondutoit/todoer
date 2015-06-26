@@ -7,8 +7,6 @@ if [ $# -lt 1 ]; then
 fi
 
 todo_pattern=TODO
-repo=
-strict=
 todoer_help="\
 
     Usage: ./todoer [options]
@@ -21,14 +19,12 @@ todoer_help="\
 
 while (( "$#" )); do
     case $1 in
-        -r | --repo)    shift; echo "using repo: $1"; $repo="$1"; shift ;;
-        -s | --strict)  shift; echo "running in strict mode"; $strict="yep" ;;
+        -r | --repo)    shift; echo "using repo: $1"; repo="$1"; shift ;;
+        -s | --strict)  shift; echo "running in strict mode"; strict="yep" shift ;;
         -h | --help)    shift; printf "%s\n" "$todoer_help"; exit 0 ;;
         *) break ;;
     esac
 done
-
-# TODO handle relative paths in proper way
 
 check_for_pipeline_error() {
     if [ "$strict" != "" ]; then
@@ -54,8 +50,8 @@ find_todo_line_nums() {
 create_tmp_files() {
     cd $repo
     find_files_with_todos > ../todo_file_list
-    find_todo_line_nums todo_file_list 1 todo_files
-    find_todo_line_nums todo_file_list 2 todo_line_nums
+    find_todo_line_nums ../todo_file_list 1 todo_files
+    find_todo_line_nums ../todo_file_list 2 todo_line_nums
 }
 
 cleanup() {
@@ -107,11 +103,10 @@ summarise() {
 }
 
 find_todos_and_report() {
-    lay_the_blame > ../theblame
+    lay_the_blame > theblame
     get_todo_dates ../theblame > ../dates
     duration_in_days > ../duration
     hist
-    #cleanup # TODO make this optional
 }
 
 hist() {
