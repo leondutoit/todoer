@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 if [ $# -lt 1 ]; then
     echo "Missing arguments, exiting"
@@ -20,7 +20,7 @@ todoer_help="\
 while (( "$#" )); do
     case $1 in
         -r | --repo)    shift; echo "using repo: $1"; repo="$1"; shift ;;
-        -s | --strict)  shift; echo "running in strict mode"; strict="yep" shift ;;
+        -s | --strict)  shift; echo "running in strict mode"; strict="yep"; shift ;;
         -h | --help)    shift; printf "%s\n" "$todoer_help"; exit 0 ;;
         *) break ;;
     esac
